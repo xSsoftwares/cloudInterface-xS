@@ -16,5 +16,5 @@ xS Interface is set to become a powerful platform for both casual and profession
 
 # Steps on how to get started:
 
-### 1. Visit [xS Interface website](https://netlify.app.xsinterface.com/)
+### 1. Visit [xS Interface website](https://xsinterface.netlify.app/)
 ### 2. Enjoy, modify your imaginary phone however you want.
