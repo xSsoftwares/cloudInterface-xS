@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xS External Software</title>
+    <style>
+        body { 
+            margin: 0; 
+            background: #2b2b2b; 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            height: 100vh; 
+            justify-content: center; 
+            overflow: hidden; 
+            text-align: center; 
+        }
+        #loading-image { 
+            position: absolute; 
+            top: 20px; 
+            width: 100px; 
+            height: 100px; 
+        }
+        #start-button { 
+            background: grey; 
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 25px; 
+            display: inline-block; 
+            cursor: pointer; 
+            margin-top: 20px; 
+        }
+        #add-shortcut-button { 
+            background: none; 
+            border: none; 
+            color: #3498db; 
+            font-size: 16px; 
+            cursor: pointer; 
+            display: none; 
+            position: absolute; 
+            bottom: 20px; 
+        }
+        #shortcut-form { 
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            position: absolute; 
+            background: white; 
+            color: black; 
+            border-radius: 10px; 
+            padding: 20px; 
+            width: 300px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+            opacity: 0; 
+            transition: opacity 0.5s ease; 
+        }
+        #shortcut-form input, 
+        #shortcut-form button { 
+            margin-bottom: 10px; 
+            padding: 8px; 
+            width: 100%; 
+        }
+        #shortcut-form button { 
+            background: #3498db; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+        #shortcut-form button:hover { 
+            background: #2980b9; 
+        }
+        #panel { 
+            position: absolute; 
+            top: -50px; 
+            width: 100%; 
+            background: #444; 
+            color: white; 
+            height: 50px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            opacity: 0; 
+            transition: top 0.5s ease, opacity 0.5s ease; 
+        }
+        #apps { 
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            transition: opacity 1s ease; 
+        }
+        .app { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            margin: 10px; 
+        }
+        .app img { 
+            width: 50px; 
+            height: auto; 
+            cursor: pointer; 
+        }
+        .app span { 
+            color: black; 
+        }
+    </style>
+</head>
+<body>
+
+    <img id="loading-image" src="xs.jpg" alt="App Image">
+
+    <button id="start-button">Start</button>
+
+    <button id="add-shortcut-button">+ Add New Shortcut</button>
+
+    <div id="shortcut-form">
+        <input type="text" id="shortcut-name" placeholder="Shortcut Name">
+        <input type="text" id="shortcut-url" placeholder="URL">
+        <button id="save-shortcut">Save</button>
+    </div>
+
+    <div id="panel">
+        <div id="time"></div>
+    </div>
+
+    <div id="apps">
+        <div class="app" id="youtube-app">
+            <img src="yt.jpg" alt="YouTube">
+            <span>YouTube</span>
+        </div>
+        <div class="app" id="call-app">
+            <img src="call-icon.jpg" alt="Call">
+            <span>Call</span>
+        </div>
+    </div>
+
+    <audio id="notification-sound" src="xs.mp3"></audio>
+
+    <script>
+        document.getElementById('start-button').onclick = () => {
+            document.getElementById('notification-sound').play();
+            document.body.style.background = 'white';
+            document.getElementById('loading-image').style.display = 'none';
+            const startButton = document.getElementById('start-button');
+            startButton.style.display = 'none'; // Hide the button
+            const apps = document.getElementById('apps');
+            apps.style.display = 'flex';
+            apps.style.opacity = '1';
+            document.getElementById('add-shortcut-button').style.display = 'block';
+            loadShortcuts(); // Load shortcuts from local storage when starting
+        };
+
+        document.getElementById('add-shortcut-button').onclick = () => {
+            const form = document.getElementById('shortcut-form');
+            form.style.display = 'flex';
+            setTimeout(() => form.style.opacity = '1', 10);
+        };
+
+        document.getElementById('save-shortcut').onclick = () => {
+            const name = document.getElementById('shortcut-name').value;
+            const url = document.getElementById('shortcut-url').value;
+            if (name && url) {
+                saveShortcut(name, url);
+                addShortcutToUI(name, url);
+                document.getElementById('shortcut-form').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('shortcut-form').style.display = 'none';
+                }, 500);
+            } else {
+                alert('Please provide both name and URL.');
+            }
+        };
+
+        document.getElementById('youtube-app').onclick = () => window.location.href = 'https://www.youtube.com';
+        document.getElementById('call-app').onclick = () => {
+            if (/Android|iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                window.location.href = 'tel://';
+            } else {
+                alert('Calling feature is only supported on Android and iOS.');
+            }
+        };
+
+        function saveShortcut(name, url) {
+            let shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [];
+            shortcuts.push({ name, url });
+            localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
+        }
+
+        function loadShortcuts() {
+            let shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || [];
+            shortcuts.forEach(shortcut => addShortcutToUI(shortcut.name, shortcut.url));
+        }
+
+        function addShortcutToUI(name, url) {
+            const newApp = document.createElement('div');
+            newApp.className = 'app';
+            newApp.innerHTML = `<img src="https://via.placeholder.com/50" alt="${name}"><span>${name}</span>`;
+            newApp.onclick = () => window.location.href = url;
+            document.getElementById('youtube-app').insertAdjacentElement('afterend', newApp);
+        }
+    </script>
+</body>
+  </html>
