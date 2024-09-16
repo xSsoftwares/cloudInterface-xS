@@ -1,4 +1,4 @@
-![Alt Text]xs.jpg)
+![Alt Text](xs.jpg)
 
 # xS Interface
 ### Welcome to xS's Interface web app.
