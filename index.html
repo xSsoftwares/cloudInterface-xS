@@ -8,11 +8,11 @@
         body { margin: 0; background: #2b2b2b; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
         #loading-screen, #apps, #shortcut-form { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         #loading-screen { background: #2b2b2b; z-index: 1; flex-direction: column; }
-        #loading-screen img { margin-top: 20px; }
+        #loading-screen img { width: 100px; height: 100px; } /* Adjust image size */
         #apps, #shortcut-form { display: none; }
         #apps { display: flex; flex-wrap: wrap; justify-content: center; }
-        .app { display: flex; flex-direction: column; align-items: center; margin: 10px; width: 80px; }
-        .app img { width: 50px; }
+        .app { display: flex; flex-direction: column; align-items: center; margin: 10px; width: 100px; } /* Adjust width for app container */
+        .app img { width: 50px; height: 50px; } /* Adjust image size */
         #start-button, #add-shortcut-button { border: none; cursor: pointer; }
         #start-button { background: grey; color: white; padding: 10px 20px; border-radius: 25px; }
         #add-shortcut-button { color: #3498db; position: absolute; bottom: 20px; }
