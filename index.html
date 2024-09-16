@@ -10,15 +10,16 @@
         #loading-screen { background: #2b2b2b; z-index: 1; flex-direction: column; }
         #loading-screen img { margin-top: 20px; }
         #apps, #shortcut-form { display: none; }
-        #apps { flex-direction: column; }
-        .app { display: flex; flex-direction: column; align-items: center; margin: 10px; }
+        #apps { display: flex; flex-wrap: wrap; justify-content: center; }
+        .app { display: flex; flex-direction: column; align-items: center; margin: 10px; width: 80px; }
         .app img { width: 50px; }
         #start-button, #add-shortcut-button { border: none; cursor: pointer; }
         #start-button { background: grey; color: white; padding: 10px 20px; border-radius: 25px; }
-        #add-shortcut-button { color: #3498db; }
-        #shortcut-form { background: white; color: black; border-radius: 10px; padding: 20px; width: 300px; flex-direction: column; }
+        #add-shortcut-button { color: #3498db; position: absolute; bottom: 20px; }
+        #shortcut-form { background: white; color: black; border-radius: 10px; padding: 20px; width: 300px; flex-direction: column; display: none; }
         #shortcut-form input, #shortcut-form button { margin: 5px 0; }
         .close-button { position: absolute; top: 10px; right: 10px; cursor: pointer; }
+        #top-panel { position: absolute; top: 0; left: 0; width: 100%; background: #2b2b2b; color: white; text-align: center; padding: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -27,6 +28,8 @@
         <img src="xs.jpg" alt="Loading Image">
         <button id="start-button">Start</button>
     </div>
+
+    <div id="top-panel">Slide Down to Interact</div>
 
     <button id="add-shortcut-button">+ Add New Shortcut</button>
 
@@ -42,17 +45,24 @@
         <div class="app" id="call-app"><img src="call-icon.jpg" alt="Call"><span>Call</span></div>
         <div class="app" id="tiktok-app"><img src="tiktok-icon.jpg" alt="TikTok"><span>TikTok</span></div>
         <div class="app" id="messages-app"><img src="messages-icon.jpg" alt="Messages"><span>Messages</span></div>
+        <div class="app" id="new-app1"><img src="https://via.placeholder.com/50" alt="New App"><span>New App 1</span></div>
+        <div class="app" id="new-app2"><img src="https://via.placeholder.com/50" alt="New App"><span>New App 2</span></div>
+        <div class="app" id="new-app3"><img src="https://via.placeholder.com/50" alt="New App"><span>New App 3</span></div>
+        <div class="app" id="new-app4"><img src="https://via.placeholder.com/50" alt="New App"><span>New App 4</span></div>
     </div>
 
     <audio id="notification-sound" src="xs.mp3"></audio>
 
     <script>
+        let timeout;
         document.getElementById('start-button').onclick = () => {
             document.getElementById('notification-sound').play();
             document.body.style.background = 'white';
             document.getElementById('loading-screen').style.display = 'none';
             document.getElementById('apps').style.display = 'flex';
             document.getElementById('add-shortcut-button').style.display = 'block';
+            document.getElementById('top-panel').style.display = 'block';
+            resetTimeout();
         };
 
         document.getElementById('add-shortcut-button').onclick = () => {
@@ -75,7 +85,7 @@
                 app.className = 'app';
                 app.innerHTML = `<img src="https://via.placeholder.com/50" alt="${name}"><span>${name}</span>`;
                 app.onclick = () => window.location.href = url;
-                document.getElementById('youtube-app').insertAdjacentElement('afterend', app);
+                document.getElementById('apps').appendChild(app);
                 document.getElementById('shortcut-form').style.opacity = '0';
                 setTimeout(() => document.getElementById('shortcut-form').style.display = 'none', 500);
             } else alert('Fill out both fields.');
@@ -85,6 +95,20 @@
         document.getElementById('call-app').onclick = () => window.location.href = /Android|iPhone|iPad|iPod/.test(navigator.userAgent) ? 'tel://' : alert('Only on mobile.');
         document.getElementById('tiktok-app').onclick = () => window.location.href = 'https://www.tiktok.com';
         document.getElementById('messages-app').onclick = () => window.location.href = /Android|iPhone|iPad|iPod/.test(navigator.userAgent) ? 'sms://' : alert('Only on mobile.');
+
+        function resetTimeout() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                document.getElementById('top-panel').style.display = 'none';
+            }, 3000);
+        }
+
+        document.getElementById('top-panel').onmouseover = resetTimeout;
+        document.getElementById('top-panel').onmouseout = () => {
+            timeout = setTimeout(() => {
+                document.getElementById('top-panel').style.display = 'none';
+            }, 3000);
+        };
     </script>
 </body>
 </html>
